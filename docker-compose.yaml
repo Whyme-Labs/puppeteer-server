@@ -1,0 +1,20 @@
+services:
+  app:
+    build: .
+    environment:
+      - API_SECRET=${API_SECRET} # Set your secret here
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium # Explicitly set chromium path
+      - R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}
+      - R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY}
+      - R2_ENDPOINT=${R2_ENDPOINT}
+      - R2_BUCKET_NAME=${R2_BUCKET_NAME}
+    restart: unless-stopped
+    labels:
+      caddy: puppeteer.wmtech.cc
+      caddy.reverse_proxy: "{{upstreams 3000}}"
+
+
+networks:
+  default:
+    name: caddy
+    external: true
