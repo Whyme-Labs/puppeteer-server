@@ -1,0 +1,11 @@
+node_modules
+.git
+.env
+*.md
+docs/
+test.js
+test-report*.png
+scp.sh
+src/
+wrangler.jsonc
+tsconfig.json
