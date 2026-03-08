@@ -39,8 +39,12 @@ app.use(rateLimit({
 // API secret from environment variable (set in Docker Compose)
 const API_SECRET = process.env.API_SECRET || 'default-secret-please-change-me';
 
-// Middleware to verify API secret
+// Middleware to verify API secret (skipped when behind Cloudflare Worker)
+const isCloudflareContainer = !!process.env.CLOUDFLARE_DEPLOYMENT_ID;
 const authenticateApiKey = (req, res, next) => {
+    if (isCloudflareContainer) {
+        return next(); // Auth handled by Worker
+    }
     const apiKey = req.headers['x-api-key'];
     if (!apiKey || apiKey !== API_SECRET) {
         return res.status(401).send('Access denied: Invalid or missing API key');
