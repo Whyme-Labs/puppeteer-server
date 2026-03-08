@@ -1,22 +1,31 @@
 # Puppeteer Server
 
-A lightweight server that renders HTML content to images using Puppeteer and optionally uploads them to Cloudflare R2 storage.
+A lightweight server that renders HTML content to images using Puppeteer and optionally uploads them to Cloudflare R2 storage. Supports deployment via standalone Docker or Cloudflare Containers.
+
+## Architecture
+
+The project supports two deployment modes:
+
+1. **Standalone Docker** -- Run the Express app directly in a Docker container (or locally with Node.js). Auth and rate limiting are handled by Express middleware.
+2. **Cloudflare Containers** -- A Cloudflare Worker (`src/index.ts`) sits in front of the Docker container. The Worker handles auth and routing, then forwards render requests to the Puppeteer container managed by Cloudflare's container runtime (Durable Objects). The container auto-sleeps after 30 seconds of inactivity and load-balances across up to 5 instances.
 
 ## Features
 
-- 🖼️ Convert HTML to PNG images
-- 📏 Customizable image dimensions
-- 🔐 API key authentication
-- 🛡️ Rate limiting protection
-- ☁️ Optional image upload to Cloudflare R2
-- 🐳 Docker-ready
+- Convert HTML to PNG images
+- Customizable image dimensions
+- API key authentication
+- Rate limiting protection (standalone mode)
+- Optional image upload to Cloudflare R2
+- Docker-ready
+- Cloudflare Containers support with auto-sleep and load balancing
 
 ## Installation
 
 ### Prerequisites
 
 - Node.js 14+
-- Chromium/Chrome browser
+- Chromium/Chrome browser (for local development)
+- Wrangler CLI (for Cloudflare Containers deployment)
 
 ### Standard Installation
 
@@ -44,6 +53,21 @@ docker build -t puppeteer-server .
 # Run the container
 docker run -p 3000:3000 -e API_SECRET=your-secret-key puppeteer-server
 ```
+
+### Cloudflare Containers Deployment
+
+```bash
+# Install dependencies (includes wrangler and Cloudflare packages)
+npm install
+
+# Set the API secret
+npx wrangler secret put API_SECRET
+
+# Deploy
+npx wrangler deploy
+```
+
+Configuration is defined in `wrangler.jsonc`. The Worker entry point is `src/index.ts`, which exports a `PuppeteerContainer` Durable Object class and a fetch handler for auth and routing.
 
 ## Usage
 

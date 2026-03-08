@@ -1,0 +1,28 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "puppeteer-server",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-04-01",
+  "containers": [
+    {
+      "class_name": "PuppeteerContainer",
+      "image": "./Dockerfile",
+      "instance_type": "standard-1",
+      "max_instances": 5
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "PUPPETEER_CONTAINER",
+        "class_name": "PuppeteerContainer"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["PuppeteerContainer"]
+    }
+  ]
+}

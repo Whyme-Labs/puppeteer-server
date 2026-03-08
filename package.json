@@ -16,5 +16,10 @@
     "express-rate-limit": "^7.5.0",
     "node-fetch": "^2.7.0",
     "puppeteer-core": "^24.5.0"
+  },
+  "devDependencies": {
+    "@cloudflare/containers": "^0.1.1",
+    "@cloudflare/workers-types": "^4.20260307.1",
+    "wrangler": "^4.71.0"
   }
 }
