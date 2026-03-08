@@ -9,6 +9,16 @@ export class PuppeteerContainer extends Container {
   defaultPort = 3000;
   sleepAfter = "30s";
 
+  // Signal to Express app that auth is handled by the Worker
+  // R2 credentials: replace placeholders with your actual values
+  envVars = {
+    CLOUDFLARE_DEPLOYMENT_ID: "1",
+    R2_ACCESS_KEY_ID: "",
+    R2_SECRET_ACCESS_KEY: "",
+    R2_ENDPOINT: "",
+    R2_BUCKET_NAME: "",
+  };
+
   override onStart() {
     console.log("Puppeteer container started");
   }
