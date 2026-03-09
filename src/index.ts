@@ -13,10 +13,10 @@ export class PuppeteerContainer extends Container {
   // R2 credentials: replace placeholders with your actual values
   envVars = {
     CLOUDFLARE_DEPLOYMENT_ID: "1",
-    R2_ACCESS_KEY_ID: "",
-    R2_SECRET_ACCESS_KEY: "",
-    R2_ENDPOINT: "",
-    R2_BUCKET_NAME: "",
+    R2_ACCESS_KEY_ID: "396435a4492d9bea305fadd2f72dbcfc",
+    R2_SECRET_ACCESS_KEY: "ce0776f0392f7ff99087ccf829b2e0cd2c4a8751e8cf38ce4c833cc3db1ad59c",
+    R2_ENDPOINT: "https://1e0170aaabc90ecf5f466128d1f0466a.r2.cloudflarestorage.com",
+    R2_BUCKET_NAME: "daily-news-reportroot",
   };
 
   override onStart() {

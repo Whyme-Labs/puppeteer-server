@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "puppeteer-server",
+  "account_id": "1e0170aaabc90ecf5f466128d1f0466a",
   "main": "src/index.ts",
   "compatibility_date": "2025-04-01",
   "containers": [
