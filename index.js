@@ -2,20 +2,22 @@ const express = require('express');
 const puppeteer = require('puppeteer-core');
 const fs = require('fs');
 const { execSync } = require('child_process');
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const app = express();
 const port = 3000;
-const AWS = require('aws-sdk');
 
 // Configure S3 client for Cloudflare R2
-const s3 = new AWS.S3({
+const s3 = new S3Client({
     endpoint: process.env.R2_ENDPOINT || 'https://your-account.r2.cloudflarestorage.com',
-    accessKeyId: process.env.R2_ACCESS_KEY_ID,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
-    signatureVersion: 'v4',
-    region: 'auto' // Cloudflare R2 uses 'auto' as the region
+    credentials: {
+        accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
+        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
+    },
+    region: 'auto',
 });
 
 const BUCKET_NAME = process.env.R2_BUCKET_NAME || 'your-bucket-name';
+const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL || '';
 
 // Set trust proxy to specific IPs or subnets that we trust (e.g., our load balancer)
 // For Caddy, we can use "loopback" since it's typically on the same host or in the same Docker network
@@ -92,30 +94,25 @@ function findChromiumPath() {
 
 // Function to upload to Cloudflare R2
 async function uploadToR2(buffer, filename) {
-    // Generate a unique filename if none is provided
     const actualFilename = filename || `report-${Date.now()}.png`;
-    
-    const params = {
+
+    const command = new PutObjectCommand({
         Bucket: BUCKET_NAME,
         Key: actualFilename,
         Body: buffer,
-        ContentType: 'image/png'
-    };
-    
+        ContentType: 'image/png',
+    });
+
     try {
-        const result = await s3.upload(params).promise();
-        console.log(`File uploaded successfully to ${result.Location}`);
-        return {
-            success: true,
-            url: `https://bucket.puppeteer.wmtech.cc/${actualFilename}`,
-            key: actualFilename
-        };
+        await s3.send(command);
+        const url = R2_PUBLIC_URL
+            ? `${R2_PUBLIC_URL}/${actualFilename}`
+            : actualFilename;
+        console.log(`File uploaded successfully: ${url}`);
+        return { success: true, url, key: actualFilename };
     } catch (error) {
         console.error('Error uploading to R2:', error);
-        return {
-            success: false,
-            error: error.message
-        };
+        return { success: false, error: error.message };
     }
 }
 
