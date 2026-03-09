@@ -149,6 +149,7 @@ Health check endpoint. Returns `OK`.
 | `R2_SECRET_ACCESS_KEY` | Cloudflare R2 secret key | `src/index.ts` envVars (CF) / `.env` (Docker) |
 | `R2_ENDPOINT` | Cloudflare R2 endpoint URL | `src/index.ts` envVars (CF) / `.env` (Docker) |
 | `R2_BUCKET_NAME` | Cloudflare R2 bucket name | `src/index.ts` envVars (CF) / `.env` (Docker) |
+| `R2_PUBLIC_URL` | Public base URL for R2 bucket (e.g. `https://bucket.example.com`) | `src/index.ts` envVars (CF) / `.env` (Docker) |
 | `PUPPETEER_EXECUTABLE_PATH` | Custom Chromium binary path | Optional |
 
 ## License
