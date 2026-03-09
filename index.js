@@ -14,6 +14,10 @@ const s3 = new S3Client({
         secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
     },
     region: 'auto',
+    // Required for Cloudflare R2: disable automatic checksum headers (x-amz-checksum-*)
+    // that R2 does not support (added by default in @aws-sdk/client-s3 v3.700+)
+    requestChecksumCalculation: 'WHEN_REQUIRED',
+    responseChecksumValidation: 'WHEN_REQUIRED',
 });
 
 const BUCKET_NAME = process.env.R2_BUCKET_NAME || 'your-bucket-name';
